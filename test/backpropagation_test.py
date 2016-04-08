@@ -25,15 +25,15 @@ def backProp(x, y, Weight_0, Weight_1):
         l2_error = y_value - l2
         #delta of layer 2, row-users, column-node(1)
         #error multiply partial derivative of sigmoid function
-        delta_l2 = l2_error*(l2*(l2_ones - l2))
-        #delta_l2 = l2_error*sigmoid_derive(l2)
+        #delta_l2 = l2_error*(l2*(l2_ones - l2))
+        delta_l2 = l2_error*sigmoid_derive(l2)
         #error of layer 1, row-users, column-node(4)
         #delta of layer 2 back to layer 1(matrix delta_l2(10*1) multiply W1.T(1*4))
         #1 node to 4 node
         l1_error = np.dot(delta_l2, W1.T)
         #delta of layer 1, row-users, column-node(4)
-        delta_l1 = l1_error*(l1*(l1_ones - l1))
-        #delta_l1 = l1_error*sigmoid_derive(l1)
+        #delta_l1 = l1_error*(l1*(l1_ones - l1))
+        delta_l1 = l1_error*sigmoid_derive(l1)
         #update W0, row-node of layer 0(number of x), column-node of layer 1(4)
         #x_value.T(row-node of layer 0, column-user) multiply
         #delta_l1(row-users, column-node of layer 1(4))
@@ -44,9 +44,23 @@ def backProp(x, y, Weight_0, Weight_1):
         W1 += np.dot(l1.T, delta_l2)
     return l2
 
+
+'''
+return norm of error
+args: output-the real result, trained_result-the result of back-propagation
+return: norm of error
+'''
 def result_error(output, trained_result):
     error_norm = np.dot((output - trained_result).T, (output - trained_result))
-    return error_norm
+    return error_norm**0.5
+
+
+'''
+return the sigmoid erivative
+f(1-f)
+'''
+def sigmoid_derive(x):
+    return x*(1-x)
 
 
 def main():
@@ -69,6 +83,7 @@ def main():
     errorCount = result_error(output_y, y_)
     print 'error is:'
     print errorCount
+
 
 if __name__ == '__main__':
     main()
